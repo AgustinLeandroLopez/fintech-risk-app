@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Riesgo Fintech</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <main class="page">
+        <section class="card">
+            <header class="hero">
+                <p class="eyebrow">Trabajo practico fintech</p>
+                <h1>Analizador de Riesgo Fintech</h1>
+                <p class="lead">
+                    Carga un archivo CSV con clientes para visualizar la informacion
+                    y obtener una primera evaluacion de riesgo de forma clara y ordenada.
+                </p>
+            </header>
+
+            <form class="upload-form" action="/analizar" method="post" enctype="multipart/form-data">
+                <label class="field-label" for="archivo">Selecciona un archivo CSV</label>
+                <input class="file-input" id="archivo" name="archivo" type="file" accept=".csv" required>
+                <button class="button" type="submit">Analizar archivo</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

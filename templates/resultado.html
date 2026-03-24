@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado inicial</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <main class="page">
+        <section class="card">
+            <header class="hero">
+                <p class="eyebrow">Resultado del analisis</p>
+                <h1>Resultado inicial</h1>
+                <p class="lead">
+                    Vista previa del archivo procesado con el detalle de riesgo calculado para cada cliente.
+                </p>
+            </header>
+
+            <section class="meta">
+                <p><span class="meta-label">Archivo recibido:</span> {{ filename }}</p>
+            </section>
+
+            {% if error %}
+            <div class="error-box">
+                <p>{{ error }}</p>
+            </div>
+            {% elif rows %}
+            <div class="table-wrapper">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>CUIT</th>
+                            <th>Cliente</th>
+                            <th>Actividad</th>
+                            <th>Monto anual</th>
+                            <th>Score</th>
+                            <th>Riesgo</th>
+                            <th>Dictamen</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr class="riesgo-{{ row['nivel_riesgo']|lower }}">
+                            <td class="summary-cell">{{ row["cuit"] }}</td>
+                            <td>
+                                <div class="client-name">{{ row["nombre"] }}</div>
+                                <div>{{ row["condicion_fiscal"] }}</div>
+                            </td>
+                            <td>{{ row["actividad"] }}</td>
+                            <td class="summary-cell">
+                                {% if row["monto_operado_anual"] not in [None, ""] %}
+                                    {{ "{:,.0f}".format(row["monto_operado_anual"] | float) | replace(",", ".") }}
+                                {% else %}
+                                    {{ row["monto_operado_anual"] }}
+                                {% endif %}
+                            </td>
+                            <td class="summary-cell">
+                                {% if row["score"] not in [None, ""] %}
+                                    {{ "{:,.0f}".format(row["score"] | float) | replace(",", ".") }}
+                                {% else %}
+                                    {{ row["score"] }}
+                                {% endif %}
+                            </td>
+                            <td><span class="risk-badge">{{ row["nivel_riesgo"] }}</span></td>
+                            <td>{{ row["dictamen"] }}</td>
+                            <td class="details-cell">
+                                <a class="detail-trigger" href="#detalle-{{ loop.index }}">Ver detalle</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% for row in rows %}
+            <div class="modal-overlay" id="detalle-{{ loop.index }}">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <div>
+                            <p class="modal-kicker">Detalle del cliente</p>
+                            <h2>{{ row["nombre"] }}</h2>
+                        </div>
+                        <a class="modal-close" href="#">Cerrar</a>
+                    </div>
+
+                    <div class="modal-grid">
+                        <div class="modal-item">
+                            <span>CUIT</span>
+                            <strong>{{ row["cuit"] }}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Condicion fiscal</span>
+                            <strong>{{ row["condicion_fiscal"] }}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Categoria</span>
+                            <strong>{{ row["categoria_monotributo"] or "-" }}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Actividad</span>
+                            <strong>{{ row["actividad"] }}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Ingreso mensual</span>
+                            <strong>
+                                {% if row["ingreso_declarado_mensual"] not in [None, ""] %}
+                                    {{ "{:,.0f}".format(row["ingreso_declarado_mensual"] | float) | replace(",", ".") }}
+                                {% else %}
+                                    {{ row["ingreso_declarado_mensual"] }}
+                                {% endif %}
+                            </strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Monto mensual</span>
+                            <strong>
+                                {% if row["monto_operado_mensual"] not in [None, ""] %}
+                                    {{ "{:,.0f}".format(row["monto_operado_mensual"] | float) | replace(",", ".") }}
+                                {% else %}
+                                    {{ row["monto_operado_mensual"] }}
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="observaciones-panel">
+                        <p class="observaciones-titulo">Observaciones</p>
+                        <p class="observaciones-texto">{{ row["observaciones"] }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-box">
+                <p>El archivo fue leido correctamente, pero no contiene filas de datos.</p>
+            </div>
+            {% endif %}
+
+            <div class="actions">
+                <a class="link-button" href="/">Volver al inicio</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

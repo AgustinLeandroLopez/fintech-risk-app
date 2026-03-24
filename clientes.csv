@@ -1,0 +1,7 @@
+cuit,nombre,condicion_fiscal,categoria_monotributo,actividad,ingreso_declarado_mensual,monto_operado_mensual,monto_operado_anual
+20123456789,Juan Perez,MONOTRIBUTO,C,Servicios IT,450000,780000,9360000
+20987654321,Ana Lopez,MONOTRIBUTO,A,Venta ropa,250000,220000,2640000
+20333444556,Carlos Gomez,MONOTRIBUTO,B,Plomeria,300000,950000,11400000
+30777888999,Tech SRL,RESPONSABLE INSCRIPTO,,Desarrollo software,3500000,4200000,50400000
+27222333444,Laura Diaz,MONOTRIBUTO,A,Servicios de belleza,200000,600000,7200000
+23333444555,Pedro Martinez,MONOTRIBUTO,D,Comercio electronico,800000,750000,9000000
