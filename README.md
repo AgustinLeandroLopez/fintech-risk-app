@@ -85,7 +85,7 @@ fintech-risk-app/
 ## ⚙️ Cómo ejecutar el proyecto
 
 1. Clonar el repositorio:
-git clone [<URL_DEL_REPO>](https://github.com/AgustinLeandroLopez/fintech-risk-app.git)
+git clone https://github.com/AgustinLeandroLopez/fintech-risk-app.git
 cd fintech-risk-app
 
 
@@ -174,22 +174,6 @@ El sistema contempla distintos escenarios:
 - Inconsistencia leve (riesgo medio)
 - Exceso de categoría monotributo (riesgo alto)
 - Responsable inscripto (sin restricciones de categoría)
-
----
-
-## 📌 Alcance del proyecto
-
-Este sistema representa un modelo simplificado de análisis de riesgo y no reemplaza evaluaciones reales de organismos regulatorios.
-
----
-
-## 🚀 Posibles mejoras futuras
-
-- Integración con IA para generación de dictámenes explicativos
-- Exportación a PDF / Excel
-- Dashboard con métricas agregadas
-- Validación contra datos reales de AFIP
-- API externa de scoring
 
 ---
 
