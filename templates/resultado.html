@@ -21,6 +21,12 @@
                 <p><span class="meta-label">Archivo recibido:</span> {{ filename }}</p>
             </section>
 
+            {% if ai_warning %}
+            <div class="warning-box">
+                <p><strong>IA en fallback:</strong> {{ ai_warning }}</p>
+            </div>
+            {% endif %}
+
             {% if error %}
             <div class="error-box">
                 <p>{{ error }}</p>
@@ -35,6 +41,7 @@
                             <th>Actividad</th>
                             <th>Monto anual</th>
                             <th>Score</th>
+                            <th>Fuente</th>
                             <th>Riesgo</th>
                             <th>Dictamen</th>
                             <th>Detalle</th>
@@ -63,10 +70,19 @@
                                     {{ row["score"] }}
                                 {% endif %}
                             </td>
+                            <td>
+                                <span class="source-badge source-{{ row['fuente_scoring']|lower }}">{{ row["fuente_scoring"] | upper }}</span>
+                            </td>
                             <td><span class="risk-badge">{{ row["nivel_riesgo"] }}</span></td>
                             <td>{{ row["dictamen"] }}</td>
                             <td class="details-cell">
-                                <a class="detail-trigger" href="#detalle-{{ loop.index }}">Ver detalle</a>
+                                <a class="detail-trigger detail-trigger-{{ row['nivel_riesgo']|lower }}" href="#detalle-{{ loop.index }}" aria-label="Ver detalle de {{ row['nombre'] }}" data-tooltip="Ver detalle" title="Ver detalle">
+                                    <span class="detail-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                                            <path d="M10.5 4a6.5 6.5 0 1 0 4.03 11.6l4.43 4.44a1 1 0 0 0 1.41-1.42l-4.43-4.43A6.5 6.5 0 0 0 10.5 4Zm0 2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z"></path>
+                                        </svg>
+                                    </span>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -76,7 +92,7 @@
 
             {% for row in rows %}
             <div class="modal-overlay" id="detalle-{{ loop.index }}">
-                <div class="modal-card">
+                <div class="modal-card modal-card-{{ row['nivel_riesgo']|lower }}">
                     <div class="modal-header">
                         <div>
                             <p class="modal-kicker">Detalle del cliente</p>
@@ -103,6 +119,38 @@
                             <strong>{{ row["actividad"] }}</strong>
                         </div>
                         <div class="modal-item">
+                            <span>Fuente del scoring</span>
+                            <strong>{{ row["fuente_scoring"] | upper }}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Estado IA</span>
+                            <strong>{{ row["ai_estado"] | upper }}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>IA consultada</span>
+                            <strong>{{ row["ai_consultada"] | upper }}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Score base</span>
+                            <strong>
+                                {% if row["score_base"] not in [None, ""] %}
+                                    {{ "{:,.0f}".format(row["score_base"] | float) | replace(",", ".") }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Score IA</span>
+                            <strong>
+                                {% if row["score_ia"] not in [None, ""] %}
+                                    {{ "{:,.0f}".format(row["score_ia"] | float) | replace(",", ".") }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </strong>
+                        </div>
+                        <div class="modal-item">
                             <span>Ingreso mensual</span>
                             <strong>
                                 {% if row["ingreso_declarado_mensual"] not in [None, ""] %}
@@ -125,8 +173,29 @@
                     </div>
 
                     <div class="observaciones-panel">
-                        <p class="observaciones-titulo">Observaciones</p>
+                        <p class="observaciones-titulo">Observaciones finales</p>
                         <p class="observaciones-texto">{{ row["observaciones"] }}</p>
+                    </div>
+
+                    {% if row["ai_error"] != "-" %}
+                    <div class="warning-box detail-warning">
+                        <p><strong>Motivo del fallback:</strong> {{ row["ai_error"] }}</p>
+                    </div>
+                    {% elif row["ai_estado"] == "omitida" %}
+                    <div class="warning-box detail-warning">
+                        <p><strong>IA omitida:</strong> el motor base no detecto señales suficientes para consultar Gemini.</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="audit-panels">
+                        <div class="observaciones-panel">
+                            <p class="observaciones-titulo">Observaciones motor base</p>
+                            <p class="observaciones-texto">{{ row["observaciones_base"] }}</p>
+                        </div>
+                        <div class="observaciones-panel">
+                            <p class="observaciones-titulo">Observaciones motor IA</p>
+                            <p class="observaciones-texto">{{ row["observaciones_ia"] }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
